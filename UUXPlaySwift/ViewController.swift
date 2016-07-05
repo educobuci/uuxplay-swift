@@ -13,7 +13,6 @@ import Alamofire
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var indicator: UIActivityIndicatorView!
-    
     var REQUEST_URL = NSURL(string: "https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json")!
     var dataSource: [[String: AnyObject]] = []
     let CELL_ID = "CELL_ID"
@@ -27,19 +26,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             for i in 0..<20 {
                 self.dataSource.appendContentsOf(movies!)
             }
-            dispatch_async(dispatch_get_main_queue(), {
-                self.indicator.stopAnimating()
-                self.tableView.hidden = false
-                self.tableView.reloadData()
-            })
+            self.indicator.stopAnimating()
+            self.tableView.hidden = false
+            self.tableView.reloadData()
         }
     }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.dataSource.count ?? 0
     }
+    
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 80;
     }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CELL_ID)
         if cell == nil {
