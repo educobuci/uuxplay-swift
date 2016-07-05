@@ -7,13 +7,15 @@
 //
 
 import UIKit
+import SDWebImage
 
-class ViewController: UIViewController, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var indicator: UIActivityIndicatorView!
     
     var REQUEST_URL = NSURL(string: "https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json")!
     var dataSource: [[String: AnyObject]]?
+    let CELL_ID = "CELL_ID"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,12 +41,21 @@ class ViewController: UIViewController, UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.dataSource?.count ?? 0
     }
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 80;
+    }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = UITableViewCell()
-        if let movie = self.dataSource?[indexPath.row] {
-            cell.textLabel?.text = movie["title"] as? String
+        var cell = tableView.dequeueReusableCellWithIdentifier(CELL_ID)
+        if cell == nil {
+            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: CELL_ID)
         }
-        return cell
+        if let movie = self.dataSource?[indexPath.row] {
+            cell?.textLabel?.text = movie["title"] as? String
+            let thumbnailUrl = NSURL(string: (movie["posters"] as! [String: String])["thumbnail"]!)
+            cell?.imageView?.sd_setImageWithURL(thumbnailUrl, placeholderImage: UIImage(named: "uux_placeholder"))
+            cell?.detailTextLabel?.text = String(movie["year"] as? Int)
+        }
+        return cell!
     }
 }
 
